@@ -8,3 +8,6 @@ terraform.tfstate.backup
 
 # OS
 .DS_Store
+
+# Claude Code
+CLAUDE.md
