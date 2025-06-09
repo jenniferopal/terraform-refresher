@@ -7,7 +7,8 @@ on:
         branches: ['main']
 
 permissions:
-    contents: read 
+    contents: read
+    id-token: write 
 
 jobs:
     terraform:
@@ -21,7 +22,17 @@ jobs:
             - name: Setup Terraform
               uses: hashicorp/setup-terraform@v3
               with:
-                terraform_version: "1.5.0" 
+                terraform_version: "1.5.0"
+
+            - name: Verify AWS Credentials
+              run: |
+                echo "AWS_ACCESS_KEY_ID is set: $([ -n "$AWS_ACCESS_KEY_ID" ] && echo 'YES' || echo 'NO')"
+                echo "AWS_SECRET_ACCESS_KEY is set: $([ -n "$AWS_SECRET_ACCESS_KEY" ] && echo 'YES' || echo 'NO')"
+                echo "AWS_DEFAULT_REGION is set: $([ -n "$AWS_DEFAULT_REGION" ] && echo 'YES' || echo 'NO')"
+              env:
+                AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+                AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+                AWS_DEFAULT_REGION: eu-west-1 
 
             # - name: Terraform Format Check
             #   run: terraform fmt -check
