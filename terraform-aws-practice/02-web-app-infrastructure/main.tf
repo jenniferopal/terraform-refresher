@@ -18,6 +18,7 @@ resource "aws_vpc" "main" {
 
     tags = {
         Name = "terraform-web-app-vpc"
+        Environment = "learning"
     }
 }
 
