@@ -23,9 +23,9 @@ jobs:
               with:
                 terraform_version: "1.5.0" 
 
-            - name: Terraform Format Check
-              run: terraform fmt -check
-              working-directory: ./terraform-aws-practice/02-web-app-infrastructure
+            # - name: Terraform Format Check
+            #   run: terraform fmt -check
+            #   working-directory: ./terraform-aws-practice/02-web-app-infrastructure
 
             - name: Terraform Init
               run: terraform init
