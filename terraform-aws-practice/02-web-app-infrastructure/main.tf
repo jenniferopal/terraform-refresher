@@ -26,7 +26,8 @@ resource "aws_instance" "web-app" {
     ami = var.ami_id
     instance_type = var.instance_type
     vpc_security_group_ids = [aws_security_group.web-app.id]
-    subnet_id = aws_subnet.public_subnet.id 
+    subnet_id = aws_subnet.public_subnet.id
+    monitoring = true  
 
     # Automatically install and configure nginx
     user_data = <<-EOF
@@ -174,4 +175,65 @@ resource "aws_s3_bucket_public_access_block" "static_assets" {
     block_public_policy = false
     ignore_public_acls = false
     restrict_public_buckets = false 
+}
+
+resource "aws_cloudwatch_metric_alarm" "high_cpu" {
+    alarm_name = "web-app-high-cpu"
+    comparison_operator = "GreaterThanThreshold"
+    evaluation_periods = "2"
+    metric_name = "CPUUtilization"
+    namespace = "AWS/EC2"
+    period = "300"
+    statistic = "Average"
+    threshold = "80"
+    alarm_description = "This metric monitors ec2 cpu utilization"
+
+    dimensions = {
+        instance_id = aws_instance.web-app.id  
+    }
+
+    tags = {
+        Name = "web-app-cpu-alarm"
+    }
+}
+
+# CloudWatch Dashboard 
+resource "aws_cloudwatch_dashboard" "web-app" {
+    dashboard_name = "web-app-monitoring"
+
+    dashboard_body = jsonencode({
+        widgets = [
+            {
+                type = "metric"
+                x = 0
+                y = 0
+                width = 12
+                height = 6
+
+
+                properties = {
+                    metrics = [
+                        ["AWS/EC2", "CPUUtilization", "InstanceId", aws_instance.web-app.id],
+                        [".", "NetworkIn", ".", "."], 
+                        [".", "NetworkOut", ".", "."]
+                    ]
+                    view = "timeSeries"
+                    stacked = false
+                    region = var.aws_region
+                    title = "EC2 Instance Metrics"
+                    period = 300
+                }   
+            }
+        ]
+    })
+}
+
+# CloudWatch Log Group (for application logs)
+resource "aws_cloudwatch_log_group" "web-app" {
+    name = "/aws/ec2/web-app"
+    retention_in_days = 7
+
+    tags = {
+        Name = "web-app-logs"
+    }
 }

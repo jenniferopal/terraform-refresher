@@ -36,3 +36,18 @@ output "s3_website_url" {
   description = "S3 static website URL"
   value = aws_s3_bucket_website_configuration.static_assets.website_endpoint
 }
+
+output "aws_cloudwatch_dashboard" {
+  description = "CloudWatch Dashboard"
+  value = aws_cloudwatch_dashboard.web-app.dashboard_name
+}
+
+output "cloudwatch_dashboard_url" {
+  description = "CloudWatch Dashboard URL"
+  value = "https://console.aws.amazon.com/cloudwatch/home?region=${var.aws_region}#dashboards:name=${aws_cloudwatch_dashboard.web-app.dashboard_name}"
+}
+
+output "cloudwatch_alarm_name" {
+  description = "CloudWatch Alarm Name"
+  value = aws_cloudwatch_metric_alarm.high_cpu.alarm_name
+}
