@@ -29,14 +29,12 @@ jobs:
 
             - name: Terraform Init
               run: terraform init
-              working-directory: ./terraform-aws-practice/02-web-app-infrastructure
               env: 
                 AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
                 AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
             
             - name: Terraform Plan
               run: terraform plan -no-color
-              working-directory: ./terraform-aws-practice/02-web-app-infrastructure
               env: 
                 AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
                 AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
@@ -44,7 +42,6 @@ jobs:
             - name: Terraform Apply
               if: github.ref == 'refs/heads/main'
               run: terraform apply -auto-approve
-              working-directory: ./terraform-aws-practice/02-web-app-infrastructure
               env: 
                 AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
                 AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
